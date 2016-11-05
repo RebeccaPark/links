@@ -1,0 +1,24 @@
+body {
+    height: 100%;
+    width: 100%;
+}
+
+
+.IndexPage {
+    height: 500px;
+    width: 1000px;
+    margin: 50px auto;
+    border: 1px solid #ddd;
+
+    &__cursor {
+        position: absolute;
+        display: none;
+
+        &--is-blinking {
+            display: block;
+            height: 15px;
+            width: 1px;
+            background: #ddd;
+        }
+    }
+}
