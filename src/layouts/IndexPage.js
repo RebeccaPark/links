@@ -167,8 +167,8 @@ export class IndexPage extends Component {
   }
 
   renderRow(row, i) {
-    const { cursorLocation: { x, y } } = this.state;
-    const isCursorRow = i === y;
+    const { focused, cursorLocation: { x, y } } = this.state;
+    const isCursorRow = i === y && focused;
 
     const renderLetter = (letter, key) =>
       <span {...classes('letter', isCursorRow && key === x ? 'is-cursor' : '')} key={key}>{letter}</span>;
@@ -181,7 +181,7 @@ export class IndexPage extends Component {
   }
 
   render() {
-    const { contentRows, cursorLocation: { y } } = this.state;
+    const { focused, contentRows, cursorLocation: { y } } = this.state;
     return (
       <div
         {...classes()}
@@ -191,6 +191,7 @@ export class IndexPage extends Component {
       >
         <div {...classes('view')}>
           {contentRows.map(this.renderRow)}
+          {!contentRows.length && focused ? this.renderRow('', 0) : null}
         </div>
       </div>
     );
