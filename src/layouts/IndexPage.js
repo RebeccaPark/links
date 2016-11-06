@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react';
 import BEMHelper from 'react-bem-helper';
 
+const TAB_SPACES = 4;
+
 const classes = new BEMHelper({
   name: 'IndexPage'
 });
@@ -28,6 +30,14 @@ export class IndexPage extends Component {
   onArrowPress(e) {
     const { contentRows } = this.state;
     const { x, y } = this.state.cursorLocation;
+
+    // tab: prevent from escaping
+    if (e.keyCode === 9) {
+      e.preventDefault();
+      for (let i = 0; i < TAB_SPACES; i += 1) {
+        this.onKeyPress({ keyCode: 32, preventDefault() {} });
+      }
+    }
 
     // left: decrement x
     if (e.keyCode === 37) {
