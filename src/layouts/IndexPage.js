@@ -13,7 +13,7 @@ export class IndexPage extends Component {
     this.onBlur = this.onBlur.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
     this.onArrowPress = this.onArrowPress.bind(this);
-    this.renderCursorRow = this.renderCursorRow.bind(this);
+    this.renderRow = this.renderRow.bind(this);
 
     this.state = {
       focused: false,
@@ -166,13 +166,16 @@ export class IndexPage extends Component {
     document.removeEventListener('keypress', this.onKeyPress);
   }
 
-  renderCursorRow(props) {
-    const { cursorLocation: { x } } = this.state;
-    const { row } = props;
+  renderRow(row, i) {
+    const { cursorLocation: { x, y } } = this.state;
+    const isCursorRow = i === y;
+
+    const renderLetter = (letter, key) =>
+      <span {...classes('letter', isCursorRow && key === x ? 'is-cursor' : '')} key={key}>{letter}</span>;
     return (
-      <div {...props} key={row}>
-        {row.split("").map((letter, j) => j === x ? <span {...classes('cursor')} key={j}>{letter}</span> : <span key={j}>{letter}</span>)}
-        {row.length <= x ? <span {...classes('cursor')} key={x}>&nbsp;</span> : null}
+      <div key={i} {...classes('row')}>
+        {row.split('').map(renderLetter)}
+        {isCursorRow && row.length <= x ? renderLetter('', x) : null}
       </div>
     );
   }
@@ -187,9 +190,7 @@ export class IndexPage extends Component {
         onBlur={this.onBlur}
       >
         <div {...classes('view')}>
-          {contentRows.map((row, i) => i === y ?
-                                     <this.renderCursorRow {...classes('row')} row={row} key={i} /> :
-                                     <div {...classes('row')} key={i}>{row}</div>)}
+          {contentRows.map(this.renderRow)}
         </div>
       </div>
     );

@@ -10,17 +10,21 @@ body {
     border: 1px solid #ddd;
     outline: none;
 
-    &__cursor {
-        background: #777;
-        color: white;
-        &--is-blinking {
-            background: #ddd;
-            color: white;
-        }
-    }
-
     &__row {
         height: 18px;
         line-height: 18px;
+    }
+
+    &__letter {
+        display: inline-block;
+        min-width: 3px;
+            height: 18px;
+        line-height: 18px;
+        vertical-align: top;
+
+        &--is-cursor {
+            background: #777;
+            color: white;
+        }
     }
 }
