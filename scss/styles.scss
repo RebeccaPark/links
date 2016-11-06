@@ -1,24 +1,39 @@
-body {
+$black: #0d0d0d;
+
+html, body, #root {
     height: 100%;
     width: 100%;
+    margin: 0;
+    background: $black;
+    color: #ff00ff;
+    font-family: 'Courier New';
 }
 
 .IndexPage {
-    height: 500px;
-    width: 1000px;
-    margin: 50px auto;
-    border: 1px solid #ddd;
+    height: 100%;
+    width: 100%;
+    padding: 5px;
     outline: none;
 
-    &__cursor {
-        position: absolute;
-        display: none;
+    &__row {
+        height: 18px;
+        line-height: 18px;
+    }
 
-        &--is-blinking {
-            display: block;
-            height: 15px;
-            width: 1px;
-            background: #ddd;
+    &__letter {
+        display: inline-block;
+        min-width: 4px;
+        height: 18px;
+        line-height: 18px;
+        vertical-align: top;
+
+        &--is-cursor {
+            background: white;
+            animation: blinker 1.5s linear infinite;
         }
     }
+}
+
+@keyframes blinker {  
+  50% { background: $black; }
 }
