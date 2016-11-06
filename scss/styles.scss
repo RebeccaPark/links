@@ -11,14 +11,16 @@ body {
     outline: none;
 
     &__cursor {
-        position: absolute;
-        display: none;
-
+        background: #777;
+        color: white;
         &--is-blinking {
-            display: block;
-            height: 15px;
-            width: 1px;
             background: #ddd;
+            color: white;
         }
+    }
+
+    &__row {
+        height: 18px;
+        line-height: 18px;
     }
 }
