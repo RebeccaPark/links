@@ -15,12 +15,28 @@ export class IndexPage extends Component {
 
     this.state = {
       focused: false,
-      viewContent: '',
+      contentRows: [],
+      cursorLocation: {
+        x: 0,
+        y: 0,
+      },
     };
   }
 
   onKeyPress(e) {
-    this.setState({ viewContent: this.state.viewContent + String.fromCharCode(e.keyCode) });
+    const { contentRows } = this.state;
+    const { y } = this.state.cursorLocation;
+    if (e.keyCode === 13) {
+	this.setState({ cursorLocation: { y: y + 1 } });
+        return;
+    }
+
+    if (contentRows.length >= y && !contentRows[y]) {
+      contentRows[y] = '';
+    }
+    
+    contentRows[y] += String.fromCharCode(e.keyCode);
+    this.setState({ contentRows });
   }
 
   onFocus() {
@@ -34,6 +50,7 @@ export class IndexPage extends Component {
   }
 
   render() {
+    const { focused, contentRows } = this.state;
     return (
       <div
         {...classes()}
@@ -41,8 +58,10 @@ export class IndexPage extends Component {
         onFocus={this.onFocus}
         onBlur={this.onBlur}
       >
-        <div {...classes('cursor', this.state.focused ? 'is-blinking' : '')}></div>
-        <div {...classes('view')}>{this.state.viewContent}</div>
+        <div {...classes('cursor', focused ? 'is-blinking' : '')}></div>
+        <div {...classes('view')}>
+          {contentRows.map((row, i) => <div key={i}>{row}</div>)}
+        </div>
       </div>
     );
   }
