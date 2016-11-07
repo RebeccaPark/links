@@ -31,6 +31,39 @@ export class IndexPage extends Component {
     const { contentRows } = this.state;
     const { x, y } = this.state.cursorLocation;
 
+    if (e.keyCode === 8) {
+        console.log(x,contentRows[y].length);
+        if (x === contentRows[y].length) {
+            contentRows[y] = contentRows[y].substring(0, contentRows[y].length - 1);
+	    console.log(contentRows[y]);
+	    this.setState({ contentRows, cursorLocation: { y, x: x - 1 } });
+	    return;
+        } else if (x < contentRows[y].length && x !== 0) {
+	    const rightSide = contentRows[y].substring(x + 1, contentRows[y].length);
+	    const leftSide = contentRows[y].substring(0, x-1);
+	    contentRows[y] = leftSide + rightSide;
+	    console.log(contentRows[y]);
+	    this.setState({ contentRows, cursorLocation: { y, x: x - 1} });
+	    return;
+	} else if (x === 0) {
+	    if (y === 0) {
+		return;
+	    } else { 
+		if (contentRows[y].length > 0) {
+		    const remain = contentRows[y].substring(0, contentRows[y].length);
+		    contentRows[y-1] += remain;
+		    contentRows.splice(y,1);
+		    this.setState({ contentRows, cursorLocation: { x: contentRows[y].length,  y: y - 1 } }) ;
+		    return;
+		} else {
+		    contentRows.splice(y,1);
+		    this.setState({ contentRows, cursorLocation: { x: contentRows[y].length, y: y - 1} });
+		    return;
+		}
+	    }
+	}
+    }
+
     // tab: prevent from escaping
     if (e.keyCode === 9) {
       e.preventDefault();
