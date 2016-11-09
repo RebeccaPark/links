@@ -14,7 +14,7 @@ export class IndexPage extends Component {
     this.onFocus = this.onFocus.bind(this);
     this.onBlur = this.onBlur.bind(this);
     this.onKeyPress = this.onKeyPress.bind(this);
-    this.onArrowPress = this.onArrowPress.bind(this);
+    this.onKeyDown = this.onKeyDown.bind(this);
     this.renderRow = this.renderRow.bind(this);
 
     this.state = {
@@ -27,7 +27,7 @@ export class IndexPage extends Component {
     };
   }
 
-  onArrowPress(e) {
+  onKeyDown(e) {
     const { contentRows } = this.state;
     const { x, y } = this.state.cursorLocation;
 
@@ -117,6 +117,24 @@ export class IndexPage extends Component {
       this.setState({ cursorLocation: { x, y: y + 1 } });
       return;
     }
+
+    // Ctrl key combinations
+    if (e.ctrlKey) {
+      // Keys pressed while holding ctrlKey appear to be uppercased.
+      const char = String.fromCharCode(e.keyCode).toLowerCase();
+
+      if (char === 'a') {
+        this.setState({ cursorLocation: { y, x: 0 } });
+        e.preventDefault();
+        return;
+      }
+
+      if (char === 'e') {
+        this.setState({ cursorLocation: { y, x: contentRows[y].length } });
+        e.preventDefault();
+        return;
+      }
+    }
   }
 
   onKeyPress(e) {
@@ -168,7 +186,7 @@ export class IndexPage extends Component {
     this.setState({ focused: true });
     document.addEventListener('keypress', this.onKeyPress);
     // Arrow events are only triggered on keydown.
-    document.addEventListener('keydown', this.onArrowPress);
+    document.addEventListener('keydown', this.onKeyDown);
   }
 
   onBlur() {
