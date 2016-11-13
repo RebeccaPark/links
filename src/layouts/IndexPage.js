@@ -30,6 +30,34 @@ export class IndexPage extends Component {
   onKeyDown(e) {
     const { contentRows } = this.state;
     const { x, y } = this.state.cursorLocation;
+   
+    // backspace support
+    if (e.keyCode === 8) {
+	if (x === 0 && y === 0) {
+	    return;
+	} else if (x === contentRows[y].length && x !== 0) { // cursor at the end of the line, delete one character
+            contentRows[y] = contentRows[y].substring(0, contentRows[y].length - 1);
+	    this.setState({ contentRows, cursorLocation: { y, x: x - 1 } });
+	    return;
+        } else if (x < contentRows[y].length && x !== 0) { // cursor in middle of line, delete one character
+	    const leftSide = contentRows[y].substring(0, x-1);
+	    const rightSide = contentRows[y].substring(x, contentRows[y].length);
+	    contentRows[y] = leftSide + rightSide;
+	    this.setState({ contentRows, cursorLocation: { y, x: x - 1} });
+	    return;
+	} else if (x === 0 && contentRows[y].length > 0) { // cursor at beginning of line and characters afterward, bring characters afterward on line to previous line
+	    const remain = contentRows[y].substring(0, contentRows[y].length);
+	    const previousLineOldLength = contentRows[y-1].length;
+	    contentRows[y-1] += remain;
+	    contentRows.splice(y, 1);
+	    this.setState({ contentRows, cursorLocation: { x: previousLineOldLength, y: y - 1 } }) ;
+	    return;
+	} else {
+	    contentRows.splice(y, 1);
+	    this.setState({ contentRows, cursorLocation: { x: contentRows[y-1].length, y: y - 1} });
+	    return;
+	}
+    } 
 
     // tab: prevent from escaping
     if (e.keyCode === 9) {
