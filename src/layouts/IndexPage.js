@@ -18,6 +18,7 @@ export class IndexPage extends Component {
     this.renderRow = this.renderRow.bind(this);
 
     this.state = {
+      remainder: '',
       focused: false,
       contentRows: [],
       cursorLocation: {
@@ -28,42 +29,42 @@ export class IndexPage extends Component {
   }
 
   onKeyDown(e) {
-    const { contentRows } = this.state;
+    const { contentRows, remainder } = this.state;
     const { x, y } = this.state.cursorLocation;
-   
+        
     // backspace support
     if (e.keyCode === 8) {
-	if (x === 0 && y === 0) {
-	    return;
-	} else if (x === contentRows[y].length && x !== 0) { // cursor at the end of the line, delete one character
-            contentRows[y] = contentRows[y].substring(0, contentRows[y].length - 1);
-	    this.setState({ contentRows, cursorLocation: { y, x: x - 1 } });
-	    return;
-        } else if (x < contentRows[y].length && x !== 0) { // cursor in middle of line, delete one character
-	    const leftSide = contentRows[y].substring(0, x-1);
-	    const rightSide = contentRows[y].substring(x, contentRows[y].length);
-	    contentRows[y] = leftSide + rightSide;
-	    this.setState({ contentRows, cursorLocation: { y, x: x - 1} });
-	    return;
-	} else if (x === 0 && contentRows[y].length > 0) { // cursor at beginning of line and characters afterward, bring characters afterward on line to previous line
-	    const remain = contentRows[y].substring(0, contentRows[y].length);
-	    const previousLineOldLength = contentRows[y-1].length;
-	    contentRows[y-1] += remain;
-	    contentRows.splice(y, 1);
-	    this.setState({ contentRows, cursorLocation: { x: previousLineOldLength, y: y - 1 } }) ;
-	    return;
-	} else {
-	    contentRows.splice(y, 1);
-	    this.setState({ contentRows, cursorLocation: { x: contentRows[y-1].length, y: y - 1} });
-	    return;
-	}
+      if (x === 0 && y === 0) {
+	return;
+      } else if (x === contentRows[y].length && x !== 0) { // cursor at the end of the line, delete one character
+        contentRows[y] = contentRows[y].substring(0, contentRows[y].length - 1);
+	this.setState({ contentRows, cursorLocation: { y, x: x - 1 } });
+	return;
+      } else if (x < contentRows[y].length && x !== 0) { // cursor in middle of line, delete one character
+	const leftSide = contentRows[y].substring(0, x-1);
+	const rightSide = contentRows[y].substring(x, contentRows[y].length);
+	contentRows[y] = leftSide + rightSide;
+	this.setState({ contentRows, cursorLocation: { y, x: x - 1} });
+	return;
+      } else if (x === 0 && contentRows[y].length > 0) { // cursor at beginning of line and characters afterward, bring characters afterward on line to previous line
+	const remain = contentRows[y].substring(0, contentRows[y].length);
+	const previousLineOldLength = contentRows[y-1].length;
+	contentRows[y-1] += remain;
+	contentRows.splice(y, 1);
+	this.setState({ contentRows, cursorLocation: { x: previousLineOldLength, y: y - 1 } }) ;
+	return;
+      } else {
+	contentRows.splice(y, 1);
+	this.setState({ contentRows, cursorLocation: { x: contentRows[y-1].length, y: y - 1} });
+	return;
+      }
     } 
 
     // tab: prevent from escaping
     if (e.keyCode === 9) {
       e.preventDefault();
       for (let i = 0; i < TAB_SPACES; i += 1) {
-        this.onKeyPress({ keyCode: 32, preventDefault() {} });
+        this.onKeyPress ({ keyCode: 32, preventDefault() {} });
       }
     }
 
@@ -146,7 +147,7 @@ export class IndexPage extends Component {
       return;
     }
 
-    // Ctrl key combinations
+    // Ctrlkey combinations
     if (e.ctrlKey) {
       // Keys pressed while holding ctrlKey appear to be uppercased.
       const char = String.fromCharCode(e.keyCode).toLowerCase();
@@ -161,6 +162,27 @@ export class IndexPage extends Component {
         this.setState({ cursorLocation: { y, x: contentRows[y].length } });
         e.preventDefault();
         return;
+      }
+
+      if (char === 'k') {
+        if (contentRows[y].length > 0) { //  
+	  const remaining = contentRows[y].substring(x, contentRows[y].length);
+          contentRows[y] = contentRows[y].slice(0, x);
+          this.setState({ contentRows, remainder: remaining });
+          e.preventDefault();
+          return;
+        } else {
+          contentRows.splice(y,0,'');
+          this.setState({ contentRows });
+          e.preventDefault();
+          return;
+        } 
+      }
+      
+      if (char === 'y') {
+        contentRows[y] = contentRows[y] + remainder;
+        e.preventDefault();
+        this.setState({ contentRows });
       }
     }
   }
