@@ -5,7 +5,7 @@ html, body, #root {
     width: 100%;
     margin: 0;
     background: $black;
-    color: #ff00ff;
+    color: rgb(125, 109, 99);
     font-family: 'Courier New';
 }
 
@@ -20,6 +20,10 @@ html, body, #root {
         line-height: 18px;
     }
 
+    &__view {
+        margin-left: 20px;
+    }
+    
     &__letter {
         display: inline-block;
         min-width: 4px;
@@ -31,6 +35,11 @@ html, body, #root {
             background: white;
             animation: blinker 1.5s linear infinite;
         }
+    }
+
+    &__line-numbers {
+        position: absolute;
+        color: rgb(82, 171, 243);
     }
 }
 

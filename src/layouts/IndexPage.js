@@ -236,6 +236,19 @@ export class IndexPage extends Component {
     );
   }
 
+  renderLineNumbers() {
+    const { contentRows } = this.state;
+    if (!contentRows.length) {
+      return <div className="IndexPage__line-number">1</div>;
+    }
+
+    return contentRows.map((_, index) =>
+      <div className="IndexPage__line-number" key={index}>
+        {index+1}
+      </div>
+    );
+  }
+
   render() {
     const { focused, contentRows, cursorLocation: { y } } = this.state;
     return (
@@ -245,6 +258,9 @@ export class IndexPage extends Component {
         onFocus={this.onFocus}
         onBlur={this.onBlur}
       >
+        <div className="IndexPage__line-numbers">
+          {this.renderLineNumbers()}
+        </div>
         <div {...classes('view')}>
           {contentRows.map(this.renderRow)}
           {!contentRows.length && focused ? this.renderRow('', 0) : null}
